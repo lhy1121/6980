@@ -11,7 +11,7 @@ def getdata(country="Afghanistan",feature_name="oil_price",start=1934,tail=2014)
     '''
     返回: data，维度是(总的时间步长, 特征数量)，其中特征数量等于一个时间步里面的向量长度；
     '''
-    data = pd.read_csv('./data.csv')
+    data = pd.read_csv('./system/dataset/data.csv')
     x = data[(start<=data['year']) & (data['year']<=tail)&(data['country'] == country)]
 
     #x_train,x_test = split_train_test(x,0.8)
@@ -34,6 +34,28 @@ def predict(net,x,num_steps,num_preds=0,input_size = 1):
         y_test[0,i+num_steps] = yhat[0]
     
     return y_test
+
+class RNNModel(nn.Module):
+    #循环神经网络模型
+    def __init__(self,input_size,num_hiddens,num_directions = 1, num_layers = 1):
+        super(RNNModel,self).__init__()
+        self.rnn = nn.GRU(input_size, num_hiddens,num_layers,batch_first=True)
+        for p in self.rnn.parameters():
+            nn.init.normal_(p, mean=0.0, std=0.001)
+        self.input_size = input_size
+        self.num_hiddens = num_hiddens
+        self.num_layers = num_layers
+        self.num_directions = num_directions
+        self.output = nn.Linear(self.num_hiddens,self.input_size)#设计输出层
+
+    def forward(self,X,state): 
+        Y,state = self.rnn(X,state) 
+        Y = Y.reshape(-1,self.num_hiddens)
+        output = self.output(Y)
+        return output,state
+    
+    def begin_state(self,batch_size = 1):
+        return torch.zeros(size = (self.num_layers*self.num_directions,batch_size,self.num_hiddens))
 
 ##########可视化##########
 def vis_data(year,x,output,train_test_rate= None):
@@ -60,12 +82,11 @@ def vis_data(year,x,output,train_test_rate= None):
     return fig
 
 
-if __name__ == "__main__":
-    year,x = getdata()
+def GRU_model(country,feature,start,tail):
+    year,x = getdata(country,feature,start,tail)
     # 加载保存的整个模型
     num_steps = 5
     net = torch.load('./gru_model.pth')
     output = predict(net,x,num_steps,num_preds=0,input_size = 1)
     fig = vis_data(year,x,output,train_test_rate= None)
-    
-
+    return fig

@@ -12,6 +12,10 @@ import engines.analysis as ana
 import engines.arima as ari
 import engines.xgboost_sample as xgb
 import engines.lstm_sample as lstm
+import engines.GRU as gru
+from engines.GRU import RNNModel
+import engines.Randomforest as rf
+import engines.LightGBM as lg
 import os
 
 # 定义页面标识
@@ -219,25 +223,49 @@ elif page == 'Prediction':
     elif energy_option == 'Gas':
         default_features_index = features.index('gas_price')
 
-    model_option = st.sidebar.radio('2.Model Options', ['Linear', 'Tree','Random Forest','RNN','LSTM','XGBoost','Arima'])
+    model_option = st.sidebar.radio('2.Model Options', ['Linear','Decision Tree','Random Forest','LightGBM','RNN','GRU','LSTM','XGBoost','Arima'])
 
     city_option = st.selectbox('Please select one cities',cities,index = default_cities_index)
     feature_option = st.selectbox('Please select one feature',features,index = default_features_index)
 
     if model_option == 'Linear':
         st.write("Linear Model Result:")
-    elif model_option == 'Tree':
-        st.write("Tree Model Result:")
+    elif model_option == 'Decision Tree':
+        st.write("Decision Tree Model Result:")
     elif model_option == 'Random Forest':
         st.write("Random Forest Model Result:")
+        plt,pred,years = rf.randomforest_func(data,city_option,feature_option,0)
+        data = {}
+        df = pd.DataFrame(data)
+        for i in range(len(years) - 5,len(years)):
+            y = years[i].strftime("%Y-%m-%d")
+            y = y[:4]
+            df[y] = pred[i]
+        st.write(df)
+        st.pyplot(plt)
+    elif model_option == 'LightGBM':
+        st.write('LightGBM Model Result')
+        plt,pred,years = lg.lightgbm_func(data,city_option,feature_option,0)
+        data = {}
+        df = pd.DataFrame(data)
+        for i in range(len(years) - 5,len(years)):
+            y = years[i].strftime("%Y-%m-%d")
+            y = y[:4]
+            df[y] = pred[i]
+        st.write(df)
+        st.pyplot(plt)
     elif model_option == 'RNN':
         st.write("RNN Model Result:")
+    elif model_option == 'GRU':
+        st.write("GRU Model Result:")
+        fig = gru.GRU_model("Afghanistan","oil_price",1934,2014)
+        st.pyplot(fig)
     elif model_option == 'LSTM':
         st.write("LSTM Model Result:")
         fig,pred,years = lstm.predict(data,0)
         data = {}
         df = pd.DataFrame(data)
-        for i in range(len(years)):
+        for i in range(len(years) - 5,len(years)):
             y = years[i].strftime("%Y-%m-%d")
             y = y[:4]
             df[y] = pred[i]
@@ -248,7 +276,7 @@ elif page == 'Prediction':
         fig,pred,years = xgb.xgboost_func(data,city_option,feature_option,0)
         data = {}
         df = pd.DataFrame(data)
-        for i in range(len(years)):
+        for i in range(len(years) - 5,len(years)):
             y = years[i].strftime("%Y-%m-%d")
             y = y[:4]
             df[y] = pred[i]
@@ -278,4 +306,3 @@ elif page == 'Prediction':
             st.pyplot(figs[2])
             st.pyplot(figs[3])
             st.write(result)
-

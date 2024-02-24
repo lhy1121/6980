@@ -181,4 +181,4 @@ def predict(data,training = 1):
     plt.title("LSTM Model")
     plt.show()
     torch.save(fm.state_dict(), 'model_lstm.pth')
-    return plt,va_pred,va_y
+    return plt,va_pred,years

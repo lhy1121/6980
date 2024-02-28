@@ -18,6 +18,7 @@ import engines.Randomforest as rf
 import engines.LightGBM as lg
 import os
 
+
 # 定义页面标识
 page = st.sidebar.selectbox('Choose your page', ['Main Page',  'Visualization','Analysis', 'Prediction'])
 

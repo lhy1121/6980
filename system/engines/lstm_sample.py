@@ -102,7 +102,7 @@ def LSTM_model_test(data,learning_rate,tw=12,predicttime=12):
     train_window = tw
     
     model = LSTM()
-    model.load_state_dict(torch.load('model_lstm.pth'))
+    model.load_state_dict(torch.load('./system/models/model_lstm.pth'))
     model.eval()
 
     test_inputs = train_data_normalized[-train_window:].tolist()
@@ -181,5 +181,5 @@ def predict(data,training = 1):
     plt.legend()
     plt.title("LSTM Model")
     plt.show()
-    torch.save(fm.state_dict(), 'model_lstm.pth')
+    #torch.save(fm.state_dict(), 'model_lstm.pth')
     return plt,va_pred,years

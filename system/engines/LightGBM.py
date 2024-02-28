@@ -149,7 +149,7 @@ def lightgbm_func(source_data,city, feature_name,train = 1):
     start_year=1932
     train_years=int(len(processed_train_data)*subsample)
     validation_years=len(processed_train_data)-train_years
-    model = lgb.Booster(model_file='LightGBM.txt')
+    model = lgb.Booster(model_file='./system/models/LightGBM.txt')
     result = lgb_model_testing(model,processed_train_data,target_1,start_year,train_years,validation_years,subsample,X_test)
     MSE = result[0]
     va_y = result[1]

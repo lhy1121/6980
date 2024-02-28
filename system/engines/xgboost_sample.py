@@ -66,7 +66,7 @@ def xgb_model_testing(data,target,start_year,train_years,validation_years,test_y
     y_validation=target.loc[validation_start:validation_end].values  
     print("start model training:")
     xgb_reg=XGBR()
-    xgb_reg.load_model('xgboost.model')
+    xgb_reg.load_model('./system/models/xgboost.model')
     y_pred=xgb_reg.predict(X_validation)
     
     #calculate mse of validation set

@@ -12,7 +12,7 @@ with open('./train/tuple_process.pkl', 'rb') as f:
     tuple_process = pickle.load(f)
 
 tuple_correct = []
-for t in tuple_process[1:]:
+for t in tuple_process:
     country = t[0]
     feature = t[1]
     try:

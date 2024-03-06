@@ -206,30 +206,16 @@ elif page == 'Prediction':
         st.markdown("# Prediction")
     with col3:
         st.markdown("[![GitHub](https://img.shields.io/badge/-GitHub-black?logo=github&style=flat-square)](https://github.com/msdm-ust/energyintel_data_platform)", unsafe_allow_html=True)
-    energy_option = st.sidebar.radio('1.Energy Options', ['Oil', 'Gas'])
-    if energy_option == 'Oil':
-        st.write("Oil Prediction")
-    elif energy_option == 'Gas':
-        st.write("Gas Prediction")
-    
-    if energy_option == 'Oil':
-        feature_map = feature_map_oil
-        features = oil_features
-        feature_revise_map = feature_revise_map_oil
-    elif energy_option == 'Gas':
-        feature_map = feature_map_gas
-        features = gas_features
-        feature_revise_map = feature_revise_map_gas
 
-    with open('./system/engines/tuple_dict.pkl', 'rb') as f:
+    with open('./system/engines/dict_correct.pkl', 'rb') as f:
         country_dict = pickle.load(f)
     countries = list(country_dict.keys())
-    model_option = st.sidebar.radio('2.Model Options', ['Linear','Decision Tree','Random Forest','LightGBM','RNN','GRU','LSTM','XGBoost','Arima'])
+    model_option = st.sidebar.radio('Model Options', ['Linear','Decision Tree','Random Forest','LightGBM','RNN','GRU','LSTM','XGBoost','Arima'])
     default_countries_index = countries.index('United States')
     country_option = st.selectbox('Please select one country',countries,index = default_countries_index)
     features_trained = country_dict[country_option]
     feature_option = st.selectbox('Please select one feature',[feature_map_total[col] for col in features_trained])
-    feature_option = feature_revise_map[feature_option]
+    feature_option = feature_revise_map_total[feature_option]
     if model_option == 'Linear':
         st.write("Linear Model Result:")
     elif model_option == 'Decision Tree':

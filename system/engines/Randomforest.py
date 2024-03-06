@@ -12,6 +12,7 @@ import joblib
 import matplotlib.pyplot as plt
 import os
 
+folder_path = "./system/engines/model/Randomforest"  
 #data cleaning functions
 def processing_data(train_data):
     for column in list(train_data.columns[train_data.isnull().sum()>0]):
@@ -126,8 +127,7 @@ def randomforest_func(source_data,city, feature_name,train = 1):
                             combination[2] = z
                             combination[3] = a
                             fmodel = result[3]
-        folder_path = "./model"  # 文件夹路径
-        model_file = 'RandomForest'+city+feature_name+'.joblib'
+        model_file = 'RandomForest'+'-'+city+'-'+feature_name+'.joblib'
         model_path = os.path.join(folder_path, model_file)
         joblib.dump(fmodel,model_path )
         print(combination)
@@ -137,8 +137,7 @@ def randomforest_func(source_data,city, feature_name,train = 1):
     start_year=1932
     train_years=int(len(processed_train_data)*subsample)
     validation_years=len(processed_train_data)-train_years
-    folder_path = "./model"  # 文件夹路径
-    model_file = 'RandomForest'+city+feature_name+'.joblib'
+    model_file = 'RandomForest'+'-'+city+'-'+feature_name+'.joblib'
     model_path = os.path.join(folder_path, model_file)
     model = joblib.load(model_path)
     result = rf_model_testing(model,processed_train_data,target_1,start_year,train_years,validation_years,subsample,X_test)

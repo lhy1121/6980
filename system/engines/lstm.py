@@ -190,5 +190,4 @@ def predict(data,city,target,training = 1):
     plt.legend()
     plt.title("LSTM Model")
     plt.show()
-    torch.save(fm.state_dict(), 'model_lstm.pth')
     return plt,va_pred,years

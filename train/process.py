@@ -22,5 +22,13 @@ def select_pred_county_feature(data):
     return res
 
 tuple_process = select_pred_county_feature(data)
-with open('tuple_process.pkl', 'wb') as f:
-    pickle.dump(tuple_process, f)
+with open('./train/tuple_correct.pkl', 'rb') as f:
+    tuple_correct = pickle.load(f)
+dic = {}
+for t in tuple_correct:
+    if t[0] in dic.keys():
+        dic[t[0]].append(t[1])
+    else:
+        dic[t[0]] = [t[1]]
+with open('./train/dict_correct.pkl', 'wb') as f:
+    pickle.dump(dic, f)

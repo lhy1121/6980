@@ -17,7 +17,7 @@ from engines.GRU import RNNModel
 import engines.Randomforest as rf
 import engines.LightGBM as lg
 import os
-
+import pickle
 # 定义页面标识
 page = st.sidebar.selectbox('Choose your page', ['Main Page', 'Visualization','Analysis', 'Prediction'])
 
@@ -206,13 +206,12 @@ elif page == 'Prediction':
         st.markdown("# Prediction")
     with col3:
         st.markdown("[![GitHub](https://img.shields.io/badge/-GitHub-black?logo=github&style=flat-square)](https://github.com/msdm-ust/energyintel_data_platform)", unsafe_allow_html=True)
-
     energy_option = st.sidebar.radio('1.Energy Options', ['Oil', 'Gas'])
     if energy_option == 'Oil':
         st.write("Oil Prediction")
     elif energy_option == 'Gas':
         st.write("Gas Prediction")
-
+    
     if energy_option == 'Oil':
         feature_map = feature_map_oil
         features = oil_features
@@ -221,18 +220,15 @@ elif page == 'Prediction':
         feature_map = feature_map_gas
         features = gas_features
         feature_revise_map = feature_revise_map_gas
-    
-    cities = data["country"].unique().tolist()
-    default_cities_index = cities.index('United States')
-    if energy_option == 'Oil':
-        default_features_index = features.index('oil_price')
-    elif energy_option == 'Gas':
-        default_features_index = features.index('gas_price')
 
+    with open('./system/engines/tuple_dict.pkl', 'rb') as f:
+        country_dict = pickle.load(f)
+    countries = list(country_dict.keys())
     model_option = st.sidebar.radio('2.Model Options', ['Linear','Decision Tree','Random Forest','LightGBM','RNN','GRU','LSTM','XGBoost','Arima'])
-
-    city_option = st.selectbox('Please select one country',cities,index = default_cities_index)
-    feature_option = st.selectbox('Please select one feature',[feature_map[col] for col in data.columns if col in features],index = default_features_index)
+    default_countries_index = countries.index('United States')
+    country_option = st.selectbox('Please select one country',countries,index = default_countries_index)
+    features_trained = country_dict[country_option]
+    feature_option = st.selectbox('Please select one feature',[feature_map_total[col] for col in features_trained])
     feature_option = feature_revise_map[feature_option]
     if model_option == 'Linear':
         st.write("Linear Model Result:")
@@ -240,7 +236,7 @@ elif page == 'Prediction':
         st.write("Decision Tree Model Result:")
     elif model_option == 'Random Forest':
         st.write("Random Forest Model Result:")
-        plt,pred,years = rf.randomforest_func(data,city_option,feature_option,0)
+        plt,pred,years = rf.randomforest_func(data,country_option,feature_option,0)
         data = {}
         df = pd.DataFrame(data)
         for i in range(len(years) - 5,len(years)):
@@ -251,7 +247,7 @@ elif page == 'Prediction':
         st.pyplot(plt)
     elif model_option == 'LightGBM':
         st.write('LightGBM Model Result')
-        plt,pred,years = lg.lightgbm_func(data,city_option,feature_option,0)
+        plt,pred,years = lg.lightgbm_func(data,country_option,feature_option,0)
         data = {}
         df = pd.DataFrame(data)
         for i in range(len(years) - 5,len(years)):
@@ -268,8 +264,8 @@ elif page == 'Prediction':
         st.pyplot(fig)
     elif model_option == 'LSTM':
         st.write("LSTM Model Result:")
-        fig,pred,years = lstm.predict(data,city_option,feature_option,1)
-        data = {}
+        fig,pred,years = lstm.predict(data,country_option,feature_option,1)
+        data = {}               
         df = pd.DataFrame(data)
         for i in range(len(years) - 5,len(years)):
             y = years[i].strftime("%Y-%m-%d")
@@ -279,7 +275,7 @@ elif page == 'Prediction':
         st.pyplot(fig)
     elif model_option == 'XGBoost':
         st.write("XGBoost Model Result:")
-        fig,pred,years = xgb.xgboost_func(data,city_option,feature_option,1)
+        fig,pred,years = xgb.xgboost_func(data,country_option,feature_option,1)
         data = {}
         df = pd.DataFrame(data)
         for i in range(len(years) - 5,len(years)):

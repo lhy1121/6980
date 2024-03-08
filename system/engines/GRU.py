@@ -91,3 +91,13 @@ def GRU_model(country,feature,start,tail):
     output = predict(net,x,num_steps,num_preds=0,input_size = 1)
     fig = vis_data(year,x,output,train_test_rate= None)
     return fig
+
+def RNN_model(country,feature,start,tail):
+    year,x = getdata(country,feature,start,tail)
+    # 加载保存的整个模型
+    num_steps = 5
+    model_file = 'RNN'+"-"+country+'-'+feature+'.pth' 
+    net = torch.load('./system/engines/model/RNN/'+model_file)
+    output = predict(net,x,num_steps,num_preds=0,input_size = 1)
+    fig = vis_data(year,x,output,train_test_rate= None)
+    return fig

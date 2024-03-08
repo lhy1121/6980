@@ -112,10 +112,6 @@ elif page == 'Visualization':
                 st.title('Different Features of '+ city_option)   
                 st.line_chart(df)
 
-        
-
-
-
 elif page == 'Analysis':
     col1, col2, col3 = st.columns((1, 4, 1))
     with col2:
@@ -207,7 +203,7 @@ elif page == 'Prediction':
     with col3:
         st.markdown("[![GitHub](https://img.shields.io/badge/-GitHub-black?logo=github&style=flat-square)](https://github.com/msdm-ust/energyintel_data_platform)", unsafe_allow_html=True)
 
-    with open('./system/engines/dict_correct.pkl', 'rb') as f:
+    with open('./system/engines/tuple_dict.pkl', 'rb') as f:
         country_dict = pickle.load(f)
     countries = list(country_dict.keys())
     model_option = st.sidebar.radio('Model Options', ['Linear','Decision Tree','Random Forest','LightGBM','RNN','GRU','LSTM','XGBoost','Arima'])
@@ -221,6 +217,9 @@ elif page == 'Prediction':
     elif model_option == 'Decision Tree':
         st.write("Decision Tree Model Result:")
     elif model_option == 'Random Forest':
+        with open('./system/engines/dict_correct.pkl', 'rb') as f:
+            country_dict = pickle.load(f)
+        countries = list(country_dict.keys())
         st.write("Random Forest Model Result:")
         plt,pred,years = rf.randomforest_func(data,country_option,feature_option,0)
         data = {}
@@ -246,11 +245,11 @@ elif page == 'Prediction':
         st.write("RNN Model Result:")
     elif model_option == 'GRU':
         st.write("GRU Model Result:")
-        fig = gru.GRU_model("Afghanistan","oil_price",1934,2014)
+        fig = gru.GRU_model(country_option,feature_option,1932,2014)
         st.pyplot(fig)
     elif model_option == 'LSTM':
         st.write("LSTM Model Result:")
-        fig,pred,years = lstm.predict(data,country_option,feature_option,1)
+        fig,pred,years = lstm.predict(data,country_option,feature_option,0)
         data = {}               
         df = pd.DataFrame(data)
         for i in range(len(years) - 5,len(years)):
@@ -261,7 +260,7 @@ elif page == 'Prediction':
         st.pyplot(fig)
     elif model_option == 'XGBoost':
         st.write("XGBoost Model Result:")
-        fig,pred,years = xgb.xgboost_func(data,country_option,feature_option,1)
+        fig,pred,years = xgb.xgboost_func(data,country_option,feature_option,0)
         data = {}
         df = pd.DataFrame(data)
         for i in range(len(years) - 5,len(years)):

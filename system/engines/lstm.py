@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 #import packages
 from sklearn.preprocessing import MinMaxScaler
 
-folder_path = "./system/engines/model"  
+folder_path = "./system/engines/model/Lstm"  
 #data cleaning functions
 def processing_data(train_data):
     for column in list(train_data.columns[train_data.isnull().sum()>0]):
@@ -107,7 +107,7 @@ def LSTM_model_test(data,learning_rate,city,target,tw=12,predicttime=12):
     train_window = tw
     
     model = LSTM()
-    model_file = 'Lstm'+city+target+'.pth'  # 模型文件名
+    model_file = 'Lstm'+"-"+city+'-'+target+'.pth' 
     model_path = os.path.join(folder_path, model_file)
     model.load_state_dict(torch.load(model_path))
     model.eval()
@@ -172,7 +172,7 @@ def predict(data,city,target,training = 1):
                     combination[2] = z
                     fm = model  
 
-    model_file = 'Lstm'+city+target+'.pth' 
+    model_file = 'Lstm'+"-"+city+'-'+target+'.pth' 
     model_path = os.path.join(folder_path, model_file)
     torch.save(fm.state_dict(), model_path)            
     #vasualization:

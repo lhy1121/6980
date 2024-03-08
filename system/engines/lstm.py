@@ -83,7 +83,7 @@ def LSTM_model_training(data,learning_rate,city,target,tw=12,predicttime=12):
     test_inputs = train_data_normalized[-train_window:].tolist()
     model.eval()
     
-    model_file = 'Lstm'+city+target+'.pth' 
+    model_file = 'Lstm'+'-'+city+'-'+target+'.pth' 
     model_path = os.path.join(folder_path, model_file)
     torch.save(model.state_dict(), model_path)
     

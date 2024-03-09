@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import engines.analysis as ana
 import engines.arima as ari
 import engines.xgboost as xgb
-import engines.LM as lstm
+import engines.Lstm as lstm
 import engines.GRU as gru
 from engines.GRU import RNNModel
 import engines.Randomforest as rf
@@ -245,11 +245,11 @@ elif page == 'Prediction':
         st.pyplot(plt)
     elif model_option == 'RNN':
         st.write("RNN Model Result:")
-        fig = gru.RNN_model(country_option,feature_option,1932,2014)
+        fig = gru.RNN_model(country_option,feature_option)
         st.pyplot(fig)
     elif model_option == 'GRU':
         st.write("GRU Model Result:")
-        fig = gru.GRU_model(country_option,feature_option,1932,2014)
+        fig = gru.GRU_model(country_option,feature_option)
         st.pyplot(fig)
     elif model_option == 'LSTM':
         st.write("LSTM Model Result:")

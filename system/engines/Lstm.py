@@ -63,7 +63,7 @@ def LSTM_model_training(data,learning_rate,city,target,tw=12,predicttime=12):
     loss_function = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
       
-    epochs = 150
+    epochs = 80
     for i in range(epochs):
         for seq, labels in train_inout_seq:
             optimizer.zero_grad()
@@ -107,7 +107,7 @@ def LSTM_model_test(data,learning_rate,city,target,tw=12,predicttime=12):
     train_window = tw
     
     model = LSTM()
-    model_file = 'Lstm'+"-"+city+'-'+target+'.pth' 
+    model_file = 'Lstm'+'-'+city+'-'+target+'.pth'  # 模型文件名
     model_path = os.path.join(folder_path, model_file)
     model.load_state_dict(torch.load(model_path))
     model.eval()
@@ -154,14 +154,16 @@ def predict(data,city,target,training = 1):
                 print("lr:",lrate)
                 if training == 1:
                     result_temp,model=LSTM_model_training(processed_train_data[:-pt],lrate,city,target,wind,pt)
-                    result,model=LSTM_model_test(processed_train_data[:-20],lrate,city,target,wind,20)
+                    result,model=LSTM_model_test(processed_train_data[:-10],lrate,city,target,wind,10)
                     print(len(result))
                 else:
-                    result,model=LSTM_model_test(processed_train_data[:-20],lrate,city,target,wind,20)
+                    result,model=LSTM_model_test(processed_train_data[:-10],lrate,city,target,wind,10)
+                    fm = model
+                    y_pred = result
                     print(len(result))
                 result=np.array(result)
-                print(result[:-1]-np.array(processed_train_data[-20:]))
-                MSE_r =np.mean(np.sum((result[:-1]-np.array(processed_train_data[-20:]))**2))
+                print(result[:-1]-np.array(processed_train_data[-10:]))
+                MSE_r =np.mean(np.sum((result[:-1]-np.array(processed_train_data[-10:]))**2))
                 #find best prediction:
                 if MSE_r < MSE:
                     MSE = MSE_r
@@ -172,16 +174,16 @@ def predict(data,city,target,training = 1):
                     combination[2] = z
                     fm = model  
 
-    model_file = 'Lstm'+"-"+city+'-'+target+'.pth' 
+    model_file = 'Lstm'+'-'+city+'-'+target+'.pth' 
     model_path = os.path.join(folder_path, model_file)
     torch.save(fm.state_dict(), model_path)            
     #vasualization:
-    x = range(0,21)
+    x = range(0,11)
     years = []
     for i in x[::-1]:
         years.append(current_date + pd.DateOffset(years=1) - pd.DateOffset(years=i))
     
-    va_y = np.array(processed_train_data[-20:])
+    va_y = np.array(processed_train_data[-10:])
     plt.plot(years,va_pred,label = 'model test')
     #x = range(1,len(va_pred)+1)
     plt.plot(years[:-1],va_y,label = 'real value')

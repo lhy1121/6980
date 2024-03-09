@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import engines.analysis as ana
 import engines.arima as ari
 import engines.xgboost as xgb
-import engines.lstm as lstm
+import engines.LM as lstm
 import engines.GRU as gru
 from engines.GRU import RNNModel
 import engines.Randomforest as rf

@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import xgboost
 import os
 
+folder_path = "./system/engines/model/Xgboost"  
 #data cleaning functions
 def processing_data(train_data):
     for column in list(train_data.columns[train_data.isnull().sum()>0]):
@@ -66,8 +67,7 @@ def xgb_model_testing(data,target,start_year,train_years,validation_years,test_y
     y_validation=target.loc[validation_start:validation_end].values  
     print("start model training:")
     xgb_reg=XGBR()
-    folder_path = "./system/engines/model"  
-    model_file = "Xgboost"+city+feature_name+'.xgb'
+    model_file = "Xgboost"+'-'+city+'-'+feature_name+'.bin'
     model_path = os.path.join(folder_path, model_file)
     xgb_reg.load_model(model_path)
     y_pred=xgb_reg.predict(X_validation)
@@ -129,8 +129,8 @@ def xgboost_func(source_data,city, feature_name,train = 1):
                         combination[2] = z
                         fmodel = result[3]
                         print(combination)
-        folder_path = "./system/engines/model"  
-        model_file = "Xgboost"+city+feature_name+'.bin'
+
+        model_file = "Xgboost"+'-'+city+'-'+feature_name+'.bin'
         model_path = os.path.join(folder_path, model_file)
         fmodel.save_model(model_path)
     else:
@@ -163,14 +163,3 @@ def xgboost_func(source_data,city, feature_name,train = 1):
     plt.show()
     print('train model totally using ',used_train,'pieces of data','mse:',MSE)
     return plt,va_pred,years
-'''
-base_dir = os.path.dirname(os.path.realpath('__file__'))   
-parent_dir = os.path.dirname(base_dir)
-dataset_dir = os.path.join(parent_dir, 'dataset')
-dataset_path = os.path.join(dataset_dir, 'data.csv')
-
-source_data = pd.read_csv(dataset_path)
-city = 'USA'
-feature_name = 'oil_price'
-xgboost_func(source_data,city, feature_name,train = 1)
-'''

@@ -216,9 +216,6 @@ elif page == 'Prediction':
     elif model_option == 'Decision Tree':
         st.write("Decision Tree Model Result:")
     elif model_option == 'Random Forest':
-        #with open('./system/engines/dict_correct.pkl', 'rb') as f:
-            #country_dict = pickle.load(f)
-        #countries = list(country_dict.keys())
         st.write("Random Forest Model Result:")
         try:
             plt,pred,years = rf.randomforest_func(data,country_option,feature_option,0)
@@ -264,15 +261,18 @@ elif page == 'Prediction':
         st.pyplot(fig)
     elif model_option == 'XGBoost':
         st.write("XGBoost Model Result:")
-        fig,pred,years = xgb.xgboost_func(data,country_option,feature_option,0)
-        data = {}
-        df = pd.DataFrame(data)
-        for i in range(len(years) - 5,len(years)):
-            y = years[i].strftime("%Y-%m-%d")
-            y = y[:4]
-            df[y] = pred[i]
-        st.write(df)
-        st.pyplot(fig)
+        try:
+            plt,pred,years = xgb.xgboost_func(data,country_option,feature_option,0)
+            data = {}
+            df = pd.DataFrame(data)
+            for i in range(len(years) - 5,len(years)):
+                y = years[i].strftime("%Y-%m-%d")
+                y = y[:4]
+                df[y] = pred[i]
+            st.write(df)
+            st.pyplot(plt)
+        except:
+            st.write("No Such Model!")
     elif model_option == 'Arima':
         st.title("ARIMA")
         # 用户输入

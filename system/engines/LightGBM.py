@@ -178,10 +178,3 @@ def lightgbm_func(source_data,city,feature_name,train = 1):
     plt.show()
     print('train model totally using ',used_train,'pieces of data','mse:',MSE)
     return plt,va_pred,years
-'''
-source_data = pd.read_csv('data.csv')
-city = 'USA'
-feature_name = 'oil_price'
-lightgbm_func(source_data,city, feature_name,train = 1)
-'''
-

@@ -11,6 +11,7 @@ from sklearn.ensemble import RandomForestRegressor
 import joblib
 import matplotlib.pyplot as plt
 import os
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
 folder_path = "./system/engines/model/Randomforest"  
 #data cleaning functions
@@ -74,11 +75,15 @@ def rf_model_testing(trained_model,data,target,start_year,train_years,validation
     #calculate mse of validation set
     va_y=y_validation.reshape(-1,1)
     va_y_pred=y_pred.reshape(-1,1)
-    mean_square_error=np.mean((va_y-va_y_pred)**2)
+
+    #test scoring illustrated there:MSE R2 and mean absolute mean absolute error.
+    r2 = r2_score(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
     
     y_pred_test=rf.predict(X_test)
     va_y_pred = np.vstack((va_y_pred, y_pred_test))
-    return mean_square_error,va_y,va_y_pred
+    return mse,va_y,va_y_pred,r2,mae
 #Set year as index
 
 def randomforest_func(source_data,city, feature_name,train = 1):
@@ -144,6 +149,8 @@ def randomforest_func(source_data,city, feature_name,train = 1):
     MSE = result[0]
     va_y = result[1]
     va_pred = result[2]
+    R2 = result[3]
+    MAE = result[4]
     used_train = train_years
 
     #vasualization:
@@ -161,7 +168,7 @@ def randomforest_func(source_data,city, feature_name,train = 1):
     plt.title("Randomforest Model")
     plt.show()
     print('train model totally using ',used_train,'pieces of data','mse:',MSE)
-    return plt,va_pred,years
+    return plt,va_pred,years,MSE,R2,MAE
 
 '''
 source_data = pd.read_csv('data.csv')

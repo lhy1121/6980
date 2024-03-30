@@ -7,6 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 #import packages
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
 folder_path = "./system/engines/model/Lstm"  
 #data cleaning functions
@@ -163,7 +164,10 @@ def predict(data,city,target,training = 1):
                     print(len(result))
                 result=np.array(result)
                 print(result[:-1]-np.array(processed_train_data[-10:]))
-                MSE_r =np.mean(np.sum((result[:-1]-np.array(processed_train_data[-10:]))**2))
+                MSE_r =mean_squared_error(result[:-1],np.array(processed_train_data[-10:]))
+                r2 = r2_score(result[:-1],np.array(processed_train_data[-10:]))
+                mae = mean_absolute_error(result[:-1],np.array(processed_train_data[-10:]))
+
                 #find best prediction:
                 if MSE_r < MSE:
                     MSE = MSE_r
@@ -172,7 +176,9 @@ def predict(data,city,target,training = 1):
                     combination[0] = x
                     combination[1] = y
                     combination[2] = z
-                    fm = model  
+                    fm = model
+                    R2 = r2
+                    MAE = mae
 
     model_file = 'Lstm'+'-'+city+'-'+target+'.pth' 
     model_path = os.path.join(folder_path, model_file)
@@ -192,4 +198,4 @@ def predict(data,city,target,training = 1):
     plt.legend()
     plt.title("LSTM Model")
     plt.show()
-    return plt,va_pred,years
+    return plt,va_pred,years,MSE,R2,MAE

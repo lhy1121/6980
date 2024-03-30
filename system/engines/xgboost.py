@@ -5,6 +5,8 @@ from xgboost import XGBRegressor as XGBR
 import matplotlib.pyplot as plt
 import xgboost
 import os
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+from sklearn.model_selection import train_test_split
 
 folder_path = "./system/engines/model/Xgboost"  
 #data cleaning functions
@@ -28,12 +30,18 @@ def zscore_data(train_data):
     return train_data
 
 def xgb_model_training(data,target,start_year,train_years,validation_years,test_years,subsample,learning_rate,max_depth,X_test):
+
+    #let the start date be the datetime
     train_start=pd.to_datetime(str(start_year))
+    #use a period of time as training dates
     train_end=train_start+pd.DateOffset(years=train_years)-pd.DateOffset(days=1)
+    #use the validation dates to show the scoring of prediction of model
     validation_start=train_end+pd.DateOffset(days=1)
     validation_end=validation_start+pd.DateOffset(years=validation_years)-pd.DateOffset(days=1)
+    '''
     test_start=train_end+pd.DateOffset(days=1)
     test_end=test_start+pd.DateOffset(years=test_years)-pd.DateOffset(days=1)
+    '''
     
     feature=data.columns.tolist()
     X_train=data.loc[train_start:train_end][feature].values
@@ -72,15 +80,20 @@ def xgb_model_testing(data,target,start_year,train_years,validation_years,test_y
     xgb_reg.load_model(model_path)
     y_pred=xgb_reg.predict(X_validation)
     
-    #calculate mse of validation set
+    #calculate prediction
     va_y=y_validation.reshape(-1,1)
     va_y_pred=y_pred.reshape(-1,1)
-    mean_square_error=np.mean((va_y-va_y_pred)**2)
+
+    #test scoring illustrated there:MSE R2 and mean absolute mean absolute error.
+    r2 = r2_score(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+
     
     y_pred_test=xgb_reg.predict(X_test)
     va_y_pred = np.vstack((va_y_pred, y_pred_test))
-    return mean_square_error,va_y,va_y_pred
-#Set year as index
+    return mse,va_y,va_y_pred,r2,mae
+    #Set year as index
 
 def xgboost_func(source_data,city, feature_name,train = 1):
     source_data['year'] = pd.to_datetime(source_data['year'], format='%Y')
@@ -144,6 +157,8 @@ def xgboost_func(source_data,city, feature_name,train = 1):
         MSE = result[0]
         va_y = result[1]
         va_pred = result[2]
+        R2 = result[3]
+        MAE = result[4]
         used_train = train_years
 
     #vasualization:
@@ -162,4 +177,4 @@ def xgboost_func(source_data,city, feature_name,train = 1):
     plt.title("Xgboost Model")
     plt.show()
     print('train model totally using ',used_train,'pieces of data','mse:',MSE)
-    return plt,va_pred,years
+    return plt,va_pred,years,MSE,R2,MAE

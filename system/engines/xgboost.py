@@ -79,7 +79,7 @@ def xgb_model_testing(data,target,start_year,train_years,validation_years,test_y
     model_path = os.path.join(folder_path, model_file)
     xgb_reg.load_model(model_path)
     y_pred=xgb_reg.predict(X_validation)
-    
+    y_test = y_validation
     #calculate prediction
     va_y=y_validation.reshape(-1,1)
     va_y_pred=y_pred.reshape(-1,1)

@@ -71,7 +71,7 @@ def rf_model_testing(trained_model,data,target,start_year,train_years,validation
     print("start model training:")
     rf =trained_model
     y_pred=rf.predict(X_validation)
-    
+    y_test = y_validation
     #calculate mse of validation set
     va_y=y_validation.reshape(-1,1)
     va_y_pred=y_pred.reshape(-1,1)

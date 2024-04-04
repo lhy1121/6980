@@ -218,7 +218,10 @@ elif page == 'Prediction':
     elif model_option == 'Random Forest':
         st.write("Random Forest Model Result:")
         try:
-            plt,pred,years = rf.randomforest_func(data,country_option,feature_option,0)
+            plt,pred,years,MSE,R2,MAE = rf.randomforest_func(data,country_option,feature_option,0)
+            st.write("MSE:",MSE)
+            st.write("R2:",R2)
+            st.write("MAE:",MAE)
             data = {}
             df = pd.DataFrame(data)
             for i in range(len(years) - 5,len(years)):
@@ -231,7 +234,10 @@ elif page == 'Prediction':
             st.write("No Such Model!")
     elif model_option == 'LightGBM':
         st.write('LightGBM Model Result')
-        plt,pred,years = lg.lightgbm_func(data,country_option,feature_option,0)
+        plt,pred,years,MSE,R2,MAE = lg.lightgbm_func(data,country_option,feature_option,0)
+        st.write("MSE:",MSE)
+        st.write("R2:",R2)
+        st.write("MAE:",MAE)
         data = {}
         df = pd.DataFrame(data)
         for i in range(len(years) - 5,len(years)):
@@ -250,7 +256,10 @@ elif page == 'Prediction':
         st.pyplot(fig)
     elif model_option == 'LSTM':
         st.write("LSTM Model Result:")
-        fig,pred,years = lstm.predict(data,country_option,feature_option,0)
+        fig,pred,years,MSE,R2,MAE = lstm.predict(data,country_option,feature_option,0)
+        st.write("MSE:",MSE)
+        st.write("R2:",R2)
+        st.write("MAE:",MAE)
         data = {}               
         df = pd.DataFrame(data)
         for i in range(len(years) - 5,len(years)):
@@ -262,7 +271,10 @@ elif page == 'Prediction':
     elif model_option == 'XGBoost':
         st.write("XGBoost Model Result:")
         try:
-            plt,pred,years = xgb.xgboost_func(data,country_option,feature_option,0)
+            plt,pred,years,MSE,R2,MAE = xgb.xgboost_func(data,country_option,feature_option,0)
+            st.write("MSE:",MSE)
+            st.write("R2:",R2)
+            st.write("MAE:",MAE)
             data = {}
             df = pd.DataFrame(data)
             for i in range(len(years) - 5,len(years)):
@@ -324,7 +336,7 @@ elif page == 'Risk Analysis':
                 st.image(image_path, caption='Total Volatility Spillovers', use_column_width=True)
                 text = """
 This chart shows the total volatility spillover from the stock markets of the six countries in the oil risk system plus the WTI crude oil futures price. Aggregate volatility spillover is how volatility in one market affects volatility in other markets. Here's how to analyze this data set:
-1. **large increase at the beginning of 2020**.
+1. **Large increase at the beginning of 2020**.
    - At the beginning of 2020, the graph shows a significant peak in the aggregate volatility spillover. This could be related to the sharp decline in global oil demand, especially due to the global embargo and travel restrictions triggered by the COVID-19 pandemic.
 During the same period, the failure of OPEC+ to agree on production cuts triggered a short-lived price war, further increasing market volatility.
 2. **Volatility beyond 2020**.
@@ -682,19 +694,135 @@ These patterns provide insight into the complex web of influences between global
         if figure_option=="Total Volatility Spillovers":
                 image_path = 'system/pictures/risk_analysis/usa_1.png'
                 st.image(image_path, caption='Total Volatility Spillovers', use_column_width=True)
+                text = """
+The graph you've shared appears to represent the total volatility spillovers within a national risk system that includes various asset classes for the United States—natural gas, oil, coal, and a stock index—over a period from 2018 to 2024. Here's a general analysis based on the visual trends observed:
+
+1. **Baseline Volatility (2018 - Early 2020)**:
+   - Before 2020, the volatility spillovers fluctuate but remain within a certain range, indicating a relatively stable interplay between the different asset classes under normal market conditions.
+
+2. **Spike in Early 2020**:
+   - The pronounced peak in early 2020 suggests a significant increase in volatility spillovers among these assets, likely corresponding with the onset of the COVID-19 pandemic, which disrupted markets due to lockdowns and reduced economic activity.
+
+3. **High Volatility Period (2020 - Mid-2022)**:
+   - Following the initial spike, there's an extended period where volatility remains elevated, reflecting ongoing market adjustments to the pandemic, changing energy demands, and significant policy responses.
+
+4. **Peak in 2022**:
+   - The peak in 2022 might be related to geopolitical events affecting energy supply, shifts in energy policy, inflation concerns, or other economic shifts impacting these markets.
+
+5. **Post-Peak Fluctuations (Post-2022)**:
+   - After the 2022 peak, volatility declines but does not return to pre-2020 levels, suggesting a new regime of higher volatility, possibly due to structural changes in energy markets or the long-term economic impacts of the pandemic.
+
+This analysis reflects the interconnectedness of volatility across different sectors of an economy, especially when those sectors are related. The interactions between energy commodities and the stock market can reveal broader economic health and investor sentiment during times of stress and recovery.
+"""
+                st.write(text)
+
 
         elif figure_option == "Directional Volatility Spillovers(To all others)":
                 image_path = 'system/pictures/risk_analysis/usa_2.png'
                 st.image(image_path, caption='Directional Volatility Spillovers(To all others)', use_column_width=True)
+                text = """
+The uploaded charts depict the directional volatility spillovers from four different asset classes—stock index, oil, natural gas, and coal—to all other markets included in the analysis from 2018 to 2024. Here is a summary of each asset class:
+
+1. **Stock Index (stock TO all others)**:
+   - There are peaks and troughs with notable peaks in volatility occurring around 2020, coinciding with the global market disruptions caused by the COVID-19 pandemic.
+   - Subsequent patterns show continued fluctuations, reflecting a market still responding to recovery efforts, policy changes, and ongoing geopolitical uncertainties.
+
+2. **Oil (oil TO all others)**:
+   - Significant volatility spikes in 2020 could be due to the dual impact of demand shocks from the pandemic and the oil price war.
+   - Post-2020 volatility might indicate ongoing market adjustments to changes in oil demand, supply dynamics, and global energy policies.
+
+3. **Natural Gas (gas TO all others)**:
+   - The sharp spike in 2020 suggests a response to the pandemic and fluctuations in energy demand and pricing specific to natural gas.
+   - The volatility profile post-spike suggests that natural gas markets remained volatile, potentially due to energy use transitions and climate policy impacts.
+
+4. **Coal (coal TO all others)**:
+   - Coal shows less pronounced peaks in 2020 but increased volatility suggests it also responded to pandemic-affected market conditions.
+   - Volatility in coal could be influenced by shifts from fossil fuels to cleaner energy sources, regulatory changes, and global energy demand shifts.
+
+These charts illustrate the interactions between these asset classes and the broader market, with pronounced volatility in 2020 highlighting the systemic impact of the pandemic and continuing effects that suggest persistent market sensitivities and adjustments.
+"""
+                st.write(text)
+
 
         elif figure_option == "Directional Volatility Spillovers(From all others)":
                 image_path = 'system/pictures/risk_analysis/usa_3.png'
                 st.image(image_path, caption='Directional Volatility Spillovers(From all others)', use_column_width=True)
+                text = """
+The charts depict directional volatility spillovers received by different asset classes from all other markets in the system. Let's interpret the patterns observed from 2018 through 2024:
+
+1. **Stock Index (stock FROM all others)**:
+   - The stock market experiences several peaks in volatility, with a significant one around 2020, likely reflecting the market's reaction to the COVID-19 pandemic.
+   - Post-2020, the ongoing volatility indicates the market's continuous adaptation to global economic conditions and policy changes.
+
+2. **Oil (oil FROM all others)**:
+   - Oil volatility received spikes in 2020, possibly due to demand and supply impacts from the pandemic and oil price wars.
+   - Elevated volatility post-2020 suggests the oil market's ongoing response to global economic shifts and energy policies.
+
+3. **Natural Gas (gas FROM all others)**:
+   - The volatility spike for natural gas in 2020 aligns with the pandemic's disruption of energy demand.
+   - Subsequent fluctuations reflect the market's adjustment to changing demand, climate policies, and competition with other energy sources.
+
+4. **Coal (coal FROM all others)**:
+   - Coal sees a less pronounced but noticeable spike in 2020, indicative of the pandemic's impact on industrial activity and energy consumption.
+   - Ongoing volatility might be related to environmental policy discussions and shifts toward cleaner energy sources.
+
+These trends underscore the interconnectedness of global financial markets and how events in one sector can significantly impact others. The pronounced peaks in 2020 across all assets highlight the extensive impact of the COVID-19 pandemic, with continued volatility indicating a market in flux and adapting to the evolving global economic landscape.
+"""
+                st.write(text)
+
 
         elif figure_option == "Net Volatility Spillovers":
                 image_path = 'system/pictures/risk_analysis/usa_4.png'
                 st.image(image_path, caption='Net Volatility Spillovers', use_column_width=True)
+                text = """
+The uploaded image appears to show net volatility spillovers for different asset classes—stock index, oil, natural gas, and coal—from 2018 through 2024. Here’s a brief analysis of the patterns:
+
+1. **NET stock**:
+   - The fluctuations around zero suggest a balance between volatility transmitted to and received from other markets, with spikes in 2020 likely due to the COVID-19 pandemic.
+   - Subsequent years show a mix of positive and negative spikes, indicating periods of heightened market sensitivity.
+
+2. **NET oil**:
+   - Significant spikes in 2020 reflect substantial volatility transmitted during the oil price wars and pandemic-related demand shocks.
+   - Ongoing high volatility suggests continued market response to global economic shifts and energy policy transitions.
+
+3. **NET gas**:
+   - A large spike around 2020 could represent a strong market reaction to pandemic-induced demand changes.
+   - Continued volatility post-2020 indicates ongoing adjustments to energy consumption patterns and policy changes.
+
+4. **NET coal**:
+   - Less pronounced volatility in 2020 compared to oil and gas still reflects a response to the pandemic's impact on industrial activity and energy consumption.
+   - Ongoing volatility could be influenced by the global shift towards cleaner energy and policy changes affecting coal.
+
+These net spillover patterns highlight the interconnectedness of these asset classes and their response to global events and market dynamics. The year 2020 is marked by significant market stress, with subsequent years showing market adaptation and rebalancing.
+"""
+                st.write(text)
+
 
         elif figure_option == "Net Pairwise Volatility Spillovers":
                 image_path = 'system/pictures/risk_analysis/usa_5.png'
                 st.image(image_path, caption='Net Pairwise Volatility Spillovers', use_column_width=True)
+                text = """
+The charts show net pairwise volatility spillovers among different asset classes: stock index, natural gas, oil, and coal from 2018 through 2024. Here's the analysis of the net spillovers between these pairs:
+
+1. **Stock and Gas (stock_gas)**:
+   - The spillovers are mostly near zero, indicating a balance in the influence between the stock market and gas prices with occasional periods of higher spillover from the stock market to gas.
+
+2. **Stock and Oil (stock_oil)**:
+   - There's a similar balance as with stock and gas, but with slightly more periods of influence from the stock market on the oil market, especially around 2020.
+
+3. **Stock and Coal (stock_coal)**:
+   - More pronounced spillovers from the stock market to coal are seen, with a significant dip in 2020, likely due to decreased demand for coal and the economic conditions of the pandemic.
+
+4. **Gas and Oil (gas_oil)**:
+   - This pairing shows a fairly balanced relationship with instances where gas prices affect oil more, notably during the 2020 period, indicating the tight linkage between these energy markets.
+
+5. **Gas and Coal (gas_coal)**:
+   - Initially balanced, the chart shows a spike in 2020 where gas prices are heavily influenced by coal, possibly reflecting changes in energy consumption patterns during the pandemic.
+
+6. **Oil and Coal (oil_coal)**:
+   - There are periods where oil influences coal significantly, with extreme levels of spillover in 2020, likely due to dramatic shifts in energy markets caused by the pandemic.
+
+These relationships capture the dynamics between the asset classes, with 2020 being a particularly volatile year, reflecting the impact of the COVID-19 pandemic on energy and stock markets. Subsequent volatility indicates ongoing market adjustments and interdependencies.
+"""
+                st.write(text)
+
